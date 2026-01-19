@@ -45,7 +45,12 @@
                 </td>
                 <td class="hide-mobile">{{ admin.created_at | date:'dd/MM/yyyy' }}</td>
                 <td>
-                  <button class="btn btn--ghost btn--sm" (click)="openEditModal(admin)">Editar</button>
+                  <div class="admins__actions">
+                    <button class="btn btn--ghost btn--sm" (click)="openEditModal(admin)">Editar</button>
+                    @if (!isCurrentAdmin(admin)) {
+                      <button class="btn btn--ghost btn--sm btn--danger-text" (click)="openDeleteModal(admin)">Eliminar</button>
+                    }
+                  </div>
                 </td>
               </tr>
             }
@@ -96,6 +101,36 @@
             Guardando...
           } @else {
             Guardar
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showDeleteModal()) {
+  <div class="modal-overlay" (click)="closeDeleteModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3>Eliminar administrador</h3>
+        <button class="modal__close" (click)="closeDeleteModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="modal__warning">¿Estás seguro de que deseas eliminar al administrador <strong>{{ deletingAdmin()?.name }}</strong>?</p>
+        <p class="modal__warning-text">Esta acción desactivará la cuenta del administrador.</p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--secondary" (click)="closeDeleteModal()">Cancelar</button>
+        <button class="btn btn--danger" [disabled]="deleting()" (click)="deleteAdmin()">
+          @if (deleting()) {
+            Eliminando...
+          } @else {
+            Eliminar administrador
           }
         </button>
       </div>

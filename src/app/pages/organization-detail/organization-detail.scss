@@ -36,6 +36,18 @@
     gap: 0.75rem;
   }
 
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.75rem;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
   &__section {
     margin-top: 1.5rem;
 
@@ -101,6 +113,20 @@
 
   &__body {
     padding: 1.25rem;
+  }
+
+  &__warning {
+    margin-bottom: 0.5rem;
+    
+    strong {
+      color: var(--text-primary);
+    }
+  }
+
+  &__warning-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
   }
 
   &__footer {

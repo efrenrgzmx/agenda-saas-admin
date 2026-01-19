@@ -24,9 +24,20 @@ export class OrganizationDetailComponent implements OnInit {
   error = signal<string | null>(null);
   updating = signal(false);
 
+  // Modal de estado
   showStatusModal = signal(false);
   newStatus = '';
   statusReason = '';
+
+  // Modal de edición
+  showEditModal = signal(false);
+  editName = '';
+  editTagline = '';
+  editBookingEnabled = true;
+
+  // Modal de eliminar
+  showDeleteModal = signal(false);
+  deleting = signal(false);
 
   ngOnInit(): void {
     const orgId = this.route.snapshot.paramMap.get('id');
@@ -125,5 +136,72 @@ export class OrganizationDetailComponent implements OnInit {
       default:
         return role;
     }
+  }
+
+  // Edición de organización
+  openEditModal(): void {
+    const org = this.organization();
+    if (!org) return;
+    this.editName = org.name;
+    this.editTagline = (org as unknown as { tagline?: string }).tagline || '';
+    this.editBookingEnabled = (org as unknown as { bookingEnabled?: boolean }).bookingEnabled ?? true;
+    this.showEditModal.set(true);
+  }
+
+  closeEditModal(): void {
+    this.showEditModal.set(false);
+  }
+
+  saveOrganization(): void {
+    const org = this.organization();
+    if (!org) return;
+
+    this.updating.set(true);
+
+    this.apiService.updateOrganization(org.id, {
+      name: this.editName,
+      tagline: this.editTagline,
+      bookingEnabled: this.editBookingEnabled,
+    }).subscribe({
+      next: () => {
+        this.organization.update((o) => o ? { 
+          ...o, 
+          name: this.editName,
+        } : null);
+        this.closeEditModal();
+        this.updating.set(false);
+      },
+      error: (err) => {
+        this.error.set(err.error?.error?.message || 'Error al actualizar organización');
+        this.updating.set(false);
+      },
+    });
+  }
+
+  // Eliminar organización
+  openDeleteModal(): void {
+    this.showDeleteModal.set(true);
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal.set(false);
+  }
+
+  deleteOrganization(): void {
+    const org = this.organization();
+    if (!org) return;
+
+    this.deleting.set(true);
+
+    this.apiService.deleteOrganization(org.id).subscribe({
+      next: () => {
+        this.router.navigate(['/organizations']);
+      },
+      error: (err) => {
+        this.error.set(err.error?.error?.message || 'Error al eliminar organización');
+        this.deleting.set(false);
+        this.closeDeleteModal();
+      },
+    });
   }
 }

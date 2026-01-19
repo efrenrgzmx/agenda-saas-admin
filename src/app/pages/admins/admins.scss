@@ -3,6 +3,12 @@
     font-weight: 500;
     color: var(--text-primary);
   }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
 }
 
 .modal-overlay {
@@ -54,6 +60,20 @@
 
   &__body {
     padding: 1.25rem;
+  }
+
+  &__warning {
+    margin-bottom: 0.5rem;
+    
+    strong {
+      color: var(--text-primary);
+    }
+  }
+
+  &__warning-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
   }
 
   &__footer {

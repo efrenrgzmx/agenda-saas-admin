@@ -109,6 +109,7 @@ export interface User {
   lastName: string;
   phone?: string;
   isVerified: number;
+  isActive?: boolean;
   createdAt: string;
 }
 

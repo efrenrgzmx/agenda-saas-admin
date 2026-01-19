@@ -31,11 +31,44 @@
           <p class="user-detail__phone">{{ user()!.phone }}</p>
         }
       </div>
-      <div class="user-detail__meta">
-        <span class="badge" [class]="user()!.isVerified ? 'badge--success' : 'badge--warning'">
-          {{ user()!.isVerified ? 'Email verificado' : 'Email no verificado' }}
-        </span>
-        <p class="user-detail__date">Registrado: {{ user()!.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+      <div class="user-detail__actions">
+        <div class="user-detail__meta">
+          <span class="badge" [class]="user()!.isVerified ? 'badge--success' : 'badge--warning'">
+            {{ user()!.isVerified ? 'Email verificado' : 'Email no verificado' }}
+          </span>
+          <span class="badge" [class]="isUserActive() ? 'badge--success' : 'badge--danger'">
+            {{ isUserActive() ? 'Activo' : 'Suspendido' }}
+          </span>
+          <p class="user-detail__date">Registrado: {{ user()!.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+        <div class="user-detail__buttons">
+          <button class="btn btn--secondary btn--sm" (click)="openStatusModal()">
+            @if (isUserActive()) {
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+              </svg>
+              Suspender
+            } @else {
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              Activar
+            }
+          </button>
+          <button class="btn btn--primary btn--sm" [disabled]="impersonating()" (click)="impersonateUser()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            @if (impersonating()) {
+              Impersonando...
+            } @else {
+              Impersonar
+            }
+          </button>
+        </div>
       </div>
     </div>
 
@@ -74,3 +107,63 @@
     </div>
   }
 </div>
+
+@if (showStatusModal()) {
+  <div class="modal-overlay" (click)="closeStatusModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3>{{ isUserActive() ? 'Suspender usuario' : 'Activar usuario' }}</h3>
+        <button class="modal__close" (click)="closeStatusModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        @if (isUserActive()) {
+          <p class="modal__warning">¿Estás seguro de que deseas suspender a <strong>{{ getFullName() }}</strong>?</p>
+          <p class="modal__warning-text">El usuario no podrá acceder al sistema hasta que sea reactivado.</p>
+        } @else {
+          <p>¿Deseas reactivar la cuenta de <strong>{{ getFullName() }}</strong>?</p>
+        }
+        <div class="form-group">
+          <label for="reason">Razón {{ isUserActive() ? '(requerida)' : '(opcional)' }}</label>
+          <textarea
+            id="reason"
+            class="form-control"
+            rows="3"
+            [(ngModel)]="statusReason"
+            placeholder="Motivo del cambio..."
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--secondary" (click)="closeStatusModal()">Cancelar</button>
+        @if (isUserActive()) {
+          <button 
+            class="btn btn--danger" 
+            [disabled]="updating() || !statusReason" 
+            (click)="newIsActive = false; updateStatus()">
+            @if (updating()) {
+              Suspendiendo...
+            } @else {
+              Suspender usuario
+            }
+          </button>
+        } @else {
+          <button 
+            class="btn btn--primary" 
+            [disabled]="updating()" 
+            (click)="newIsActive = true; updateStatus()">
+            @if (updating()) {
+              Activando...
+            } @else {
+              Activar usuario
+            }
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,2963 @@
+{
+  "info": {
+    "name": "Agenda SaaS API",
+    "description": "Colección de endpoints para el sistema de agenda SaaS con ejemplos de respuestas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "orgId",
+      "value": ""
+    },
+    {
+      "key": "memberId",
+      "value": ""
+    },
+    {
+      "key": "serviceId",
+      "value": ""
+    },
+    {
+      "key": "customerId",
+      "value": ""
+    },
+    {
+      "key": "appointmentId",
+      "value": ""
+    },
+    {
+      "key": "slug",
+      "value": "mi-negocio"
+    },
+    {
+      "key": "adminId",
+      "value": ""
+    },
+    {
+      "key": "bookingCode",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@ejemplo.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"Juan\",\n  \"lastName\": \"Pérez\",\n  \"phone\": \"+52 555 123 4567\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          },
+          "response": [
+            {
+              "name": "Registro Exitoso",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"user\": {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"email\": \"usuario@ejemplo.com\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"Pérez\",\n      \"phone\": \"+52 555 123 4567\",\n      \"isVerified\": false,\n      \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}"
+            },
+            {
+              "name": "Email ya registrado",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Email already in use\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            },
+            {
+              "name": "Validación fallida",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Validation failed\",\n    \"code\": \"VALIDATION_ERROR\",\n    \"details\": [\n      { \"field\": \"email\", \"message\": \"Invalid email format\" },\n      { \"field\": \"password\", \"message\": \"Password must be at least 8 characters\" }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@ejemplo.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": [
+            {
+              "name": "Login Exitoso",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"user\": {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"email\": \"usuario@ejemplo.com\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"Pérez\"\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJlbWFpbCI6InVzdWFyaW9AZWplbXBsby5jb20iLCJpYXQiOjE3Mzc1NDAwMDAsImV4cCI6MTczNzYyNjQwMH0.abc123\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTczNzU0MDAwMCwiZXhwIjoxNzM4MTQ0ODAwfQ.xyz789\"\n  }\n}"
+            },
+            {
+              "name": "Credenciales inválidas",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Invalid credentials\",\n    \"code\": \"UNAUTHORIZED\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            }
+          },
+          "response": [
+            {
+              "name": "Token renovado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}"
+            },
+            {
+              "name": "Token inválido o expirado",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Invalid or expired refresh token\",\n    \"code\": \"UNAUTHORIZED\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          },
+          "response": [
+            {
+              "name": "Logout exitoso",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Logged out successfully\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@ejemplo.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "forgot-password"]
+            }
+          },
+          "response": [
+            {
+              "name": "Email enviado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"If the email exists, a password reset link has been sent\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token-here\",\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "reset-password"]
+            }
+          },
+          "response": [
+            {
+              "name": "Contraseña restablecida",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Password reset successfully\"\n  }\n}"
+            },
+            {
+              "name": "Token inválido",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Invalid or expired reset token\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            }
+          },
+          "response": [
+            {
+              "name": "Perfil obtenido",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"usuario@ejemplo.com\",\n    \"firstName\": \"Juan\",\n    \"lastName\": \"Pérez\",\n    \"phone\": \"+52 555 123 4567\",\n    \"isVerified\": true,\n    \"createdAt\": \"2026-01-01T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "No autenticado",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Authentication required\",\n    \"code\": \"UNAUTHORIZED\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Juan Carlos\",\n  \"lastName\": \"Pérez García\",\n  \"phone\": \"+52 555 987 6543\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            }
+          },
+          "response": [
+            {
+              "name": "Perfil actualizado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"usuario@ejemplo.com\",\n    \"firstName\": \"Juan Carlos\",\n    \"lastName\": \"Pérez García\",\n    \"phone\": \"+52 555 987 6543\",\n    \"isVerified\": true,\n    \"createdAt\": \"2026-01-01T10:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpassword456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me/password",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me", "password"]
+            }
+          },
+          "response": [
+            {
+              "name": "Contraseña cambiada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Password changed successfully\"\n  }\n}"
+            },
+            {
+              "name": "Contraseña actual incorrecta",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Current password is incorrect\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Organizations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users/me/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me", "organizations"]
+            }
+          },
+          "response": [
+            {
+              "name": "Organizaciones obtenidas",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n      \"name\": \"Mi Negocio\",\n      \"slug\": \"mi-negocio\",\n      \"role\": \"owner\",\n      \"isActive\": true,\n      \"createdAt\": \"2026-01-05T10:00:00.000Z\"\n    },\n    {\n      \"id\": \"770e8400-e29b-41d4-a716-446655440002\",\n      \"name\": \"Otra Empresa\",\n      \"slug\": \"otra-empresa\",\n      \"role\": \"admin\",\n      \"isActive\": true,\n      \"createdAt\": \"2026-01-10T10:00:00.000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Organizations",
+      "item": [
+        {
+          "name": "Create Organization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('orgId', jsonData.data.id);",
+                  "    pm.collectionVariables.set('slug', jsonData.data.slug);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mi Negocio\",\n  \"description\": \"Descripción de mi negocio\",\n  \"timezone\": \"America/Mexico_City\",\n  \"currency\": \"MXN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations"]
+            }
+          },
+          "response": [
+            {
+              "name": "Organización creada",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n    \"name\": \"Mi Negocio\",\n    \"slug\": \"mi-negocio\",\n    \"description\": \"Descripción de mi negocio\",\n    \"timezone\": \"America/Mexico_City\",\n    \"currency\": \"MXN\",\n    \"isActive\": true,\n    \"bookingEnabled\": true,\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Slug ya existe",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Organization slug already exists\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Organization",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Organización obtenida",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n    \"name\": \"Mi Negocio\",\n    \"slug\": \"mi-negocio\",\n    \"description\": \"Descripción de mi negocio\",\n    \"tagline\": \"Los mejores servicios\",\n    \"about\": \"Somos una empresa dedicada a...\",\n    \"phone\": \"+52 555 111 2222\",\n    \"email\": \"contacto@minegocio.com\",\n    \"website\": \"https://minegocio.com\",\n    \"timezone\": \"America/Mexico_City\",\n    \"currency\": \"MXN\",\n    \"isActive\": true,\n    \"bookingEnabled\": true,\n    \"bookingAdvanceDays\": 30,\n    \"bookingMinNoticeHours\": 2,\n    \"createdAt\": \"2026-01-05T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-15T14:30:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Organización no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Organization not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            },
+            {
+              "name": "Sin permiso",
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"You don't have permission to access this organization\",\n    \"code\": \"FORBIDDEN\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mi Negocio Actualizado\",\n  \"tagline\": \"Los mejores servicios\",\n  \"about\": \"Somos una empresa dedicada a...\",\n  \"phone\": \"+52 555 111 2222\",\n  \"email\": \"contacto@minegocio.com\",\n  \"website\": \"https://minegocio.com\",\n  \"bookingEnabled\": true,\n  \"bookingAdvanceDays\": 30,\n  \"bookingMinNoticeHours\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Organización actualizada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n    \"name\": \"Mi Negocio Actualizado\",\n    \"slug\": \"mi-negocio\",\n    \"tagline\": \"Los mejores servicios\",\n    \"about\": \"Somos una empresa dedicada a...\",\n    \"phone\": \"+52 555 111 2222\",\n    \"email\": \"contacto@minegocio.com\",\n    \"website\": \"https://minegocio.com\",\n    \"bookingEnabled\": true,\n    \"bookingAdvanceDays\": 30,\n    \"bookingMinNoticeHours\": 2,\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Organization",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Organización eliminada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Organization deleted successfully\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Members",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.length > 0) {",
+                  "    pm.collectionVariables.set('memberId', jsonData.data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "members"]
+            }
+          },
+          "response": [
+            {
+              "name": "Miembros obtenidos",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n      \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"email\": \"usuario@ejemplo.com\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"Pérez\",\n      \"role\": \"owner\",\n      \"isActive\": true,\n      \"createdAt\": \"2026-01-05T10:00:00.000Z\"\n    },\n    {\n      \"id\": \"880e8400-e29b-41d4-a716-446655440011\",\n      \"userId\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"email\": \"empleado@ejemplo.com\",\n      \"firstName\": \"María\",\n      \"lastName\": \"García\",\n      \"role\": \"worker\",\n      \"isActive\": true,\n      \"createdAt\": \"2026-01-10T10:00:00.000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Member",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/members/{{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "members", "{{memberId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Miembro obtenido",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n    \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"usuario@ejemplo.com\",\n    \"firstName\": \"Juan\",\n    \"lastName\": \"Pérez\",\n    \"phone\": \"+52 555 123 4567\",\n    \"role\": \"owner\",\n    \"isActive\": true,\n    \"services\": [\n      {\n        \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n        \"name\": \"Corte de cabello\"\n      }\n    ],\n    \"createdAt\": \"2026-01-05T10:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Member",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/members/{{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "members", "{{memberId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Miembro actualizado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n    \"role\": \"admin\",\n    \"isActive\": true,\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Remove Member",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/members/{{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "members", "{{memberId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Miembro eliminado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Member removed successfully\"\n  }\n}"
+            },
+            {
+              "name": "No puede eliminarse a sí mismo",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Cannot remove yourself from the organization\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Invitation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nuevo-miembro@ejemplo.com\",\n  \"role\": \"worker\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/invitations",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "invitations"]
+            }
+          },
+          "response": [
+            {
+              "name": "Invitación creada",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"aa0e8400-e29b-41d4-a716-446655440030\",\n    \"email\": \"nuevo-miembro@ejemplo.com\",\n    \"role\": \"worker\",\n    \"status\": \"pending\",\n    \"expiresAt\": \"2026-01-26T10:00:00.000Z\",\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Email ya es miembro",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"User is already a member of this organization\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Invitations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/invitations",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "invitations"]
+            }
+          },
+          "response": [
+            {
+              "name": "Invitaciones obtenidas",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"aa0e8400-e29b-41d4-a716-446655440030\",\n      \"email\": \"nuevo-miembro@ejemplo.com\",\n      \"role\": \"worker\",\n      \"status\": \"pending\",\n      \"expiresAt\": \"2026-01-26T10:00:00.000Z\",\n      \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cancel Invitation",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/invitations/{{invitationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "invitations", "{{invitationId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Invitación cancelada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Invitation cancelled successfully\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Invitation by Token (Public)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/invitations/{{invitationToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "invitations", "{{invitationToken}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Invitación obtenida",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"aa0e8400-e29b-41d4-a716-446655440030\",\n    \"email\": \"nuevo-miembro@ejemplo.com\",\n    \"role\": \"worker\",\n    \"organization\": {\n      \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n      \"name\": \"Mi Negocio\",\n      \"slug\": \"mi-negocio\"\n    },\n    \"expiresAt\": \"2026-01-26T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Invitación expirada",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Invitation has expired\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Accept Invitation",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/invitations/{{invitationToken}}/accept",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "invitations", "{{invitationToken}}", "accept"]
+            }
+          },
+          "response": [
+            {
+              "name": "Invitación aceptada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Invitation accepted successfully\",\n    \"organization\": {\n      \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n      \"name\": \"Mi Negocio\",\n      \"slug\": \"mi-negocio\"\n    },\n    \"role\": \"worker\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Organization Hours",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/hours",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "hours"]
+            }
+          },
+          "response": [
+            {
+              "name": "Horarios obtenidos",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    { \"dayOfWeek\": 0, \"isOpen\": false, \"openTime\": null, \"closeTime\": null },\n    { \"dayOfWeek\": 1, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n    { \"dayOfWeek\": 2, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n    { \"dayOfWeek\": 3, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n    { \"dayOfWeek\": 4, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n    { \"dayOfWeek\": 5, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"14:00\" },\n    { \"dayOfWeek\": 6, \"isOpen\": false, \"openTime\": null, \"closeTime\": null }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Set Organization Hours",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hours\": [\n    { \"dayOfWeek\": 0, \"isOpen\": false },\n    { \"dayOfWeek\": 1, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n    { \"dayOfWeek\": 2, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n    { \"dayOfWeek\": 3, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n    { \"dayOfWeek\": 4, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n    { \"dayOfWeek\": 5, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"14:00\" },\n    { \"dayOfWeek\": 6, \"isOpen\": false }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/hours",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "hours"]
+            }
+          },
+          "response": [
+            {
+              "name": "Horarios actualizados",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Business hours updated successfully\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Create Service",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('serviceId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Corte de cabello\",\n  \"description\": \"Corte de cabello profesional\",\n  \"duration\": 30,\n  \"price\": 150.00,\n  \"bufferBefore\": 0,\n  \"bufferAfter\": 5,\n  \"isActive\": true,\n  \"isPublic\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services"]
+            }
+          },
+          "response": [
+            {
+              "name": "Servicio creado",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n    \"name\": \"Corte de cabello\",\n    \"description\": \"Corte de cabello profesional\",\n    \"duration\": 30,\n    \"price\": 150.00,\n    \"currency\": \"MXN\",\n    \"bufferBefore\": 0,\n    \"bufferAfter\": 5,\n    \"isActive\": true,\n    \"isPublic\": true,\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services"]
+            }
+          },
+          "response": [
+            {
+              "name": "Servicios obtenidos",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n      \"name\": \"Corte de cabello\",\n      \"description\": \"Corte de cabello profesional\",\n      \"duration\": 30,\n      \"price\": 150.00,\n      \"currency\": \"MXN\",\n      \"isActive\": true,\n      \"isPublic\": true,\n      \"workerCount\": 2\n    },\n    {\n      \"id\": \"990e8400-e29b-41d4-a716-446655440021\",\n      \"name\": \"Tinte de cabello\",\n      \"description\": \"Tinte profesional\",\n      \"duration\": 90,\n      \"price\": 500.00,\n      \"currency\": \"MXN\",\n      \"isActive\": true,\n      \"isPublic\": true,\n      \"workerCount\": 1\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Services (Include Inactive)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services?includeInactive=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services"],
+              "query": [
+                {
+                  "key": "includeInactive",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Servicios con inactivos",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n      \"name\": \"Corte de cabello\",\n      \"isActive\": true\n    },\n    {\n      \"id\": \"990e8400-e29b-41d4-a716-446655440022\",\n      \"name\": \"Servicio descontinuado\",\n      \"isActive\": false\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Service",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services", "{{serviceId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Servicio obtenido",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n    \"name\": \"Corte de cabello\",\n    \"description\": \"Corte de cabello profesional\",\n    \"duration\": 30,\n    \"price\": 150.00,\n    \"currency\": \"MXN\",\n    \"bufferBefore\": 0,\n    \"bufferAfter\": 5,\n    \"isActive\": true,\n    \"isPublic\": true,\n    \"workers\": [\n      {\n        \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n        \"firstName\": \"Juan\",\n        \"lastName\": \"Pérez\"\n      }\n    ],\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Servicio no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Service not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Corte de cabello premium\",\n  \"price\": 200.00,\n  \"duration\": 45\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services", "{{serviceId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Servicio actualizado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n    \"name\": \"Corte de cabello premium\",\n    \"price\": 200.00,\n    \"duration\": 45,\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services/{{serviceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services", "{{serviceId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Servicio eliminado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Service deleted successfully\"\n  }\n}"
+            },
+            {
+              "name": "Servicio con citas pendientes",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Cannot delete service with pending appointments\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Service Workers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services/{{serviceId}}/workers",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services", "{{serviceId}}", "workers"]
+            }
+          },
+          "response": [
+            {
+              "name": "Trabajadores del servicio",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n      \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"Pérez\",\n      \"email\": \"usuario@ejemplo.com\"\n    },\n    {\n      \"id\": \"880e8400-e29b-41d4-a716-446655440011\",\n      \"userId\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"firstName\": \"María\",\n      \"lastName\": \"García\",\n      \"email\": \"maria@ejemplo.com\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Assign Workers to Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberIds\": [\"{{memberId}}\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services/{{serviceId}}/workers",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services", "{{serviceId}}", "workers"]
+            }
+          },
+          "response": [
+            {
+              "name": "Trabajadores asignados",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Workers assigned successfully\",\n    \"assigned\": 1\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Remove Worker from Service",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/services/{{serviceId}}/workers/{{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "services", "{{serviceId}}", "workers", "{{memberId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Trabajador removido",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Worker removed from service successfully\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Availability",
+      "item": [
+        {
+          "name": "Get Available Slots",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/availability/slots?serviceId={{serviceId}}&startDate=2026-01-20&endDate=2026-01-25",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "availability", "slots"],
+              "query": [
+                {
+                  "key": "serviceId",
+                  "value": "{{serviceId}}"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2026-01-20"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-25"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Slots disponibles",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"slots\": {\n      \"2026-01-20\": [\n        { \"time\": \"09:00\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\"] },\n        { \"time\": \"09:30\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\", \"880e8400-e29b-41d4-a716-446655440011\"] },\n        { \"time\": \"10:00\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\"] },\n        { \"time\": \"10:30\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440011\"] }\n      ],\n      \"2026-01-21\": [\n        { \"time\": \"09:00\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\", \"880e8400-e29b-41d4-a716-446655440011\"] },\n        { \"time\": \"09:30\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\"] }\n      ]\n    },\n    \"workers\": [\n      { \"id\": \"880e8400-e29b-41d4-a716-446655440010\", \"firstName\": \"Juan\", \"lastName\": \"Pérez\" },\n      { \"id\": \"880e8400-e29b-41d4-a716-446655440011\", \"firstName\": \"María\", \"lastName\": \"García\" }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Worker Availability",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/availability/members/{{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "availability", "members", "{{memberId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Disponibilidad del trabajador",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"memberId\": \"880e8400-e29b-41d4-a716-446655440010\",\n    \"schedule\": [\n      { \"dayOfWeek\": 0, \"timeRanges\": [] },\n      { \"dayOfWeek\": 1, \"timeRanges\": [{ \"start\": \"09:00\", \"end\": \"13:00\" }, { \"start\": \"14:00\", \"end\": \"18:00\" }] },\n      { \"dayOfWeek\": 2, \"timeRanges\": [{ \"start\": \"09:00\", \"end\": \"18:00\" }] },\n      { \"dayOfWeek\": 3, \"timeRanges\": [{ \"start\": \"09:00\", \"end\": \"18:00\" }] },\n      { \"dayOfWeek\": 4, \"timeRanges\": [{ \"start\": \"09:00\", \"end\": \"18:00\" }] },\n      { \"dayOfWeek\": 5, \"timeRanges\": [{ \"start\": \"09:00\", \"end\": \"14:00\" }] },\n      { \"dayOfWeek\": 6, \"timeRanges\": [] }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Set Worker Availability",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schedule\": [\n    {\n      \"dayOfWeek\": 1,\n      \"timeRanges\": [\n        { \"start\": \"09:00\", \"end\": \"13:00\" },\n        { \"start\": \"14:00\", \"end\": \"18:00\" }\n      ]\n    },\n    {\n      \"dayOfWeek\": 2,\n      \"timeRanges\": [\n        { \"start\": \"09:00\", \"end\": \"18:00\" }\n      ]\n    },\n    {\n      \"dayOfWeek\": 3,\n      \"timeRanges\": [\n        { \"start\": \"09:00\", \"end\": \"18:00\" }\n      ]\n    },\n    {\n      \"dayOfWeek\": 4,\n      \"timeRanges\": [\n        { \"start\": \"09:00\", \"end\": \"18:00\" }\n      ]\n    },\n    {\n      \"dayOfWeek\": 5,\n      \"timeRanges\": [\n        { \"start\": \"09:00\", \"end\": \"14:00\" }\n      ]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/availability/members/{{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "availability", "members", "{{memberId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Disponibilidad actualizada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Availability updated successfully\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Worker Exceptions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/availability/members/{{memberId}}/exceptions?startDate=2026-01-01&endDate=2026-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "availability", "members", "{{memberId}}", "exceptions"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-12-31"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Excepciones obtenidas",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"bb0e8400-e29b-41d4-a716-446655440040\",\n      \"date\": \"2026-02-14\",\n      \"isAvailable\": false,\n      \"startTime\": null,\n      \"endTime\": null,\n      \"reason\": \"Día festivo\"\n    },\n    {\n      \"id\": \"bb0e8400-e29b-41d4-a716-446655440041\",\n      \"date\": \"2026-01-25\",\n      \"isAvailable\": true,\n      \"startTime\": \"10:00\",\n      \"endTime\": \"14:00\",\n      \"reason\": \"Horario especial sábado\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Exception (Day Off)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-02-14\",\n  \"isAvailable\": false,\n  \"reason\": \"Día festivo\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/availability/members/{{memberId}}/exceptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "availability", "members", "{{memberId}}", "exceptions"]
+            }
+          },
+          "response": [
+            {
+              "name": "Excepción creada (día libre)",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"bb0e8400-e29b-41d4-a716-446655440040\",\n    \"date\": \"2026-02-14\",\n    \"isAvailable\": false,\n    \"reason\": \"Día festivo\",\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Exception (Special Hours)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-01-25\",\n  \"isAvailable\": true,\n  \"startTime\": \"10:00\",\n  \"endTime\": \"14:00\",\n  \"reason\": \"Horario especial sábado\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/availability/members/{{memberId}}/exceptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "availability", "members", "{{memberId}}", "exceptions"]
+            }
+          },
+          "response": [
+            {
+              "name": "Excepción creada (horario especial)",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"bb0e8400-e29b-41d4-a716-446655440041\",\n    \"date\": \"2026-01-25\",\n    \"isAvailable\": true,\n    \"startTime\": \"10:00\",\n    \"endTime\": \"14:00\",\n    \"reason\": \"Horario especial sábado\",\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Exception",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/availability/members/{{memberId}}/exceptions/{{exceptionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "availability", "members", "{{memberId}}", "exceptions", "{{exceptionId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Excepción eliminada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Exception deleted successfully\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('customerId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"María\",\n  \"lastName\": \"González\",\n  \"email\": \"maria@ejemplo.com\",\n  \"phone\": \"+52 555 444 3333\",\n  \"notes\": \"Cliente frecuente\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "customers"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cliente creado",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"cc0e8400-e29b-41d4-a716-446655440050\",\n    \"firstName\": \"María\",\n    \"lastName\": \"González\",\n    \"email\": \"maria@ejemplo.com\",\n    \"phone\": \"+52 555 444 3333\",\n    \"notes\": \"Cliente frecuente\",\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Email ya existe",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Customer with this email already exists\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "customers"]
+            }
+          },
+          "response": [
+            {
+              "name": "Clientes obtenidos",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"customers\": [\n      {\n        \"id\": \"cc0e8400-e29b-41d4-a716-446655440050\",\n        \"firstName\": \"María\",\n        \"lastName\": \"González\",\n        \"email\": \"maria@ejemplo.com\",\n        \"phone\": \"+52 555 444 3333\",\n        \"appointmentCount\": 5,\n        \"lastAppointment\": \"2026-01-15T10:00:00.000Z\",\n        \"createdAt\": \"2025-12-01T10:00:00.000Z\"\n      },\n      {\n        \"id\": \"cc0e8400-e29b-41d4-a716-446655440051\",\n        \"firstName\": \"Pedro\",\n        \"lastName\": \"Martínez\",\n        \"email\": \"pedro@ejemplo.com\",\n        \"phone\": \"+52 555 222 1111\",\n        \"appointmentCount\": 2,\n        \"lastAppointment\": \"2026-01-10T14:00:00.000Z\",\n        \"createdAt\": \"2026-01-05T10:00:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 20,\n      \"total\": 2,\n      \"totalPages\": 1\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search Customers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/customers?q=maría&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "customers"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "maría"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Búsqueda de clientes",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"customers\": [\n      {\n        \"id\": \"cc0e8400-e29b-41d4-a716-446655440050\",\n        \"firstName\": \"María\",\n        \"lastName\": \"González\",\n        \"email\": \"maria@ejemplo.com\",\n        \"phone\": \"+52 555 444 3333\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 20,\n      \"total\": 1,\n      \"totalPages\": 1\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Customer",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "customers", "{{customerId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cliente obtenido",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"cc0e8400-e29b-41d4-a716-446655440050\",\n    \"firstName\": \"María\",\n    \"lastName\": \"González\",\n    \"email\": \"maria@ejemplo.com\",\n    \"phone\": \"+52 555 444 3333\",\n    \"notes\": \"Cliente frecuente\",\n    \"appointmentCount\": 5,\n    \"completedAppointments\": 4,\n    \"cancelledAppointments\": 0,\n    \"noShowCount\": 1,\n    \"totalSpent\": 750.00,\n    \"createdAt\": \"2025-12-01T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-15T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Cliente no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Customer not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"María Elena\",\n  \"notes\": \"Cliente VIP\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "customers", "{{customerId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cliente actualizado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"cc0e8400-e29b-41d4-a716-446655440050\",\n    \"firstName\": \"María Elena\",\n    \"lastName\": \"González\",\n    \"email\": \"maria@ejemplo.com\",\n    \"phone\": \"+52 555 444 3333\",\n    \"notes\": \"Cliente VIP\",\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "customers", "{{customerId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cliente eliminado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Customer deleted successfully\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Appointments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/customers/{{customerId}}/appointments?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "customers", "{{customerId}}", "appointments"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Citas del cliente",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"appointments\": [\n      {\n        \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n        \"startTime\": \"2026-01-20T10:00:00.000Z\",\n        \"endTime\": \"2026-01-20T10:30:00.000Z\",\n        \"status\": \"pending\",\n        \"service\": {\n          \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n          \"name\": \"Corte de cabello\"\n        },\n        \"worker\": {\n          \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n          \"firstName\": \"Juan\",\n          \"lastName\": \"Pérez\"\n        }\n      },\n      {\n        \"id\": \"dd0e8400-e29b-41d4-a716-446655440061\",\n        \"startTime\": \"2026-01-15T10:00:00.000Z\",\n        \"endTime\": \"2026-01-15T10:30:00.000Z\",\n        \"status\": \"completed\",\n        \"service\": {\n          \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n          \"name\": \"Corte de cabello\"\n        },\n        \"worker\": {\n          \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n          \"firstName\": \"Juan\",\n          \"lastName\": \"Pérez\"\n        }\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 20,\n      \"total\": 2,\n      \"totalPages\": 1\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Create Appointment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('appointmentId', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"{{serviceId}}\",\n  \"workerId\": \"{{memberId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"startTime\": \"2026-01-20T10:00:00.000Z\",\n  \"notes\": \"Notas del cliente\",\n  \"internalNotes\": \"Notas internas\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita creada",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"bookingCode\": \"ABC123\",\n    \"startTime\": \"2026-01-20T10:00:00.000Z\",\n    \"endTime\": \"2026-01-20T10:30:00.000Z\",\n    \"status\": \"pending\",\n    \"notes\": \"Notas del cliente\",\n    \"internalNotes\": \"Notas internas\",\n    \"service\": {\n      \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n      \"name\": \"Corte de cabello\",\n      \"duration\": 30,\n      \"price\": 150.00\n    },\n    \"worker\": {\n      \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"Pérez\"\n    },\n    \"customer\": {\n      \"id\": \"cc0e8400-e29b-41d4-a716-446655440050\",\n      \"firstName\": \"María\",\n      \"lastName\": \"González\",\n      \"email\": \"maria@ejemplo.com\",\n      \"phone\": \"+52 555 444 3333\"\n    },\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Horario no disponible",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Time slot is not available\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            },
+            {
+              "name": "Trabajador no ofrece el servicio",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Worker does not provide this service\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Appointment (New Customer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"{{serviceId}}\",\n  \"workerId\": \"{{memberId}}\",\n  \"customer\": {\n    \"firstName\": \"Pedro\",\n    \"lastName\": \"Martínez\",\n    \"email\": \"pedro@ejemplo.com\",\n    \"phone\": \"+52 555 222 1111\"\n  },\n  \"startTime\": \"2026-01-21T14:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita creada con cliente nuevo",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440062\",\n    \"bookingCode\": \"DEF456\",\n    \"startTime\": \"2026-01-21T14:00:00.000Z\",\n    \"endTime\": \"2026-01-21T14:30:00.000Z\",\n    \"status\": \"pending\",\n    \"customer\": {\n      \"id\": \"cc0e8400-e29b-41d4-a716-446655440052\",\n      \"firstName\": \"Pedro\",\n      \"lastName\": \"Martínez\",\n      \"email\": \"pedro@ejemplo.com\",\n      \"phone\": \"+52 555 222 1111\"\n    },\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Appointments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments?startDate=2026-01-01&endDate=2026-01-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-31"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Citas listadas",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"appointments\": [\n      {\n        \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n        \"bookingCode\": \"ABC123\",\n        \"startTime\": \"2026-01-20T10:00:00.000Z\",\n        \"endTime\": \"2026-01-20T10:30:00.000Z\",\n        \"status\": \"pending\",\n        \"service\": {\n          \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n          \"name\": \"Corte de cabello\",\n          \"price\": 150.00\n        },\n        \"worker\": {\n          \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n          \"firstName\": \"Juan\",\n          \"lastName\": \"Pérez\"\n        },\n        \"customer\": {\n          \"id\": \"cc0e8400-e29b-41d4-a716-446655440050\",\n          \"firstName\": \"María\",\n          \"lastName\": \"González\"\n        }\n      },\n      {\n        \"id\": \"dd0e8400-e29b-41d4-a716-446655440061\",\n        \"bookingCode\": \"XYZ789\",\n        \"startTime\": \"2026-01-21T14:00:00.000Z\",\n        \"endTime\": \"2026-01-21T14:30:00.000Z\",\n        \"status\": \"confirmed\",\n        \"service\": {\n          \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n          \"name\": \"Corte de cabello\",\n          \"price\": 150.00\n        },\n        \"worker\": {\n          \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n          \"firstName\": \"Juan\",\n          \"lastName\": \"Pérez\"\n        },\n        \"customer\": {\n          \"id\": \"cc0e8400-e29b-41d4-a716-446655440051\",\n          \"firstName\": \"Pedro\",\n          \"lastName\": \"Martínez\"\n        }\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 20,\n      \"total\": 2,\n      \"totalPages\": 1\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Appointments by Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments?status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Citas por estado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"appointments\": [\n      {\n        \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n        \"bookingCode\": \"ABC123\",\n        \"startTime\": \"2026-01-20T10:00:00.000Z\",\n        \"status\": \"pending\",\n        \"service\": { \"name\": \"Corte de cabello\" },\n        \"customer\": { \"firstName\": \"María\", \"lastName\": \"González\" }\n      }\n    ],\n    \"pagination\": { \"page\": 1, \"limit\": 20, \"total\": 1, \"totalPages\": 1 }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Appointments by Worker",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments?workerId={{memberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments"],
+              "query": [
+                {
+                  "key": "workerId",
+                  "value": "{{memberId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Citas por trabajador",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"appointments\": [\n      {\n        \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n        \"startTime\": \"2026-01-20T10:00:00.000Z\",\n        \"status\": \"pending\",\n        \"worker\": { \"id\": \"880e8400-e29b-41d4-a716-446655440010\", \"firstName\": \"Juan\" }\n      }\n    ],\n    \"pagination\": { \"page\": 1, \"limit\": 20, \"total\": 1, \"totalPages\": 1 }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Appointment",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments/{{appointmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments", "{{appointmentId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita obtenida",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"bookingCode\": \"ABC123\",\n    \"startTime\": \"2026-01-20T10:00:00.000Z\",\n    \"endTime\": \"2026-01-20T10:30:00.000Z\",\n    \"status\": \"pending\",\n    \"notes\": \"Notas del cliente\",\n    \"internalNotes\": \"Notas internas\",\n    \"service\": {\n      \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n      \"name\": \"Corte de cabello\",\n      \"duration\": 30,\n      \"price\": 150.00\n    },\n    \"worker\": {\n      \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"Pérez\",\n      \"email\": \"usuario@ejemplo.com\"\n    },\n    \"customer\": {\n      \"id\": \"cc0e8400-e29b-41d4-a716-446655440050\",\n      \"firstName\": \"María\",\n      \"lastName\": \"González\",\n      \"email\": \"maria@ejemplo.com\",\n      \"phone\": \"+52 555 444 3333\"\n    },\n    \"createdAt\": \"2026-01-19T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-19T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Cita no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Appointment not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Appointment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Notas actualizadas\",\n  \"internalNotes\": \"Recordar preferencias\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments/{{appointmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments", "{{appointmentId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita actualizada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"notes\": \"Notas actualizadas\",\n    \"internalNotes\": \"Recordar preferencias\",\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reschedule Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"2026-01-22T11:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments/{{appointmentId}}/reschedule",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments", "{{appointmentId}}", "reschedule"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita reprogramada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"startTime\": \"2026-01-22T11:00:00.000Z\",\n    \"endTime\": \"2026-01-22T11:30:00.000Z\",\n    \"status\": \"pending\",\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Nuevo horario no disponible",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"New time slot is not available\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Confirm Appointment",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments/{{appointmentId}}/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments", "{{appointmentId}}", "confirm"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita confirmada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"status\": \"confirmed\",\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Start Appointment",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments/{{appointmentId}}/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments", "{{appointmentId}}", "start"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita iniciada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"status\": \"in_progress\",\n    \"startedAt\": \"2026-01-20T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-20T10:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Complete Appointment",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments/{{appointmentId}}/complete",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments", "{{appointmentId}}", "complete"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita completada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"status\": \"completed\",\n    \"completedAt\": \"2026-01-20T10:30:00.000Z\",\n    \"updatedAt\": \"2026-01-20T10:30:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mark No-Show",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments/{{appointmentId}}/no-show",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments", "{{appointmentId}}", "no-show"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cliente no se presentó",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"status\": \"no_show\",\n    \"updatedAt\": \"2026-01-20T10:30:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cancel Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"El cliente canceló\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/organizations/{{orgId}}/appointments/{{appointmentId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["organizations", "{{orgId}}", "appointments", "{{appointmentId}}", "cancel"]
+            }
+          },
+          "response": [
+            {
+              "name": "Cita cancelada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440060\",\n    \"status\": \"cancelled\",\n    \"cancellationReason\": \"El cliente canceló\",\n    \"cancelledAt\": \"2026-01-19T15:00:00.000Z\",\n    \"updatedAt\": \"2026-01-19T15:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "No se puede cancelar cita completada",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Cannot cancel a completed appointment\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Public (Booking)",
+      "item": [
+        {
+          "name": "Get Organization Info",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/p/{{slug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["p", "{{slug}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Información pública de la organización",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n    \"name\": \"Mi Negocio\",\n    \"slug\": \"mi-negocio\",\n    \"tagline\": \"Los mejores servicios\",\n    \"about\": \"Somos una empresa dedicada a...\",\n    \"phone\": \"+52 555 111 2222\",\n    \"email\": \"contacto@minegocio.com\",\n    \"website\": \"https://minegocio.com\",\n    \"timezone\": \"America/Mexico_City\",\n    \"currency\": \"MXN\",\n    \"bookingEnabled\": true,\n    \"hours\": [\n      { \"dayOfWeek\": 0, \"isOpen\": false },\n      { \"dayOfWeek\": 1, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n      { \"dayOfWeek\": 2, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n      { \"dayOfWeek\": 3, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n      { \"dayOfWeek\": 4, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"18:00\" },\n      { \"dayOfWeek\": 5, \"isOpen\": true, \"openTime\": \"09:00\", \"closeTime\": \"14:00\" },\n      { \"dayOfWeek\": 6, \"isOpen\": false }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Organización no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Organization not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            },
+            {
+              "name": "Reservas deshabilitadas",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Online booking is not enabled for this organization\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Public Services",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/p/{{slug}}/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["p", "{{slug}}", "services"]
+            }
+          },
+          "response": [
+            {
+              "name": "Servicios públicos",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"990e8400-e29b-41d4-a716-446655440020\",\n      \"name\": \"Corte de cabello\",\n      \"description\": \"Corte de cabello profesional\",\n      \"duration\": 30,\n      \"price\": 150.00,\n      \"currency\": \"MXN\"\n    },\n    {\n      \"id\": \"990e8400-e29b-41d4-a716-446655440021\",\n      \"name\": \"Tinte de cabello\",\n      \"description\": \"Tinte profesional\",\n      \"duration\": 90,\n      \"price\": 500.00,\n      \"currency\": \"MXN\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Service Workers",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/p/{{slug}}/services/{{serviceId}}/workers",
+              "host": ["{{baseUrl}}"],
+              "path": ["p", "{{slug}}", "services", "{{serviceId}}", "workers"]
+            }
+          },
+          "response": [
+            {
+              "name": "Trabajadores del servicio (público)",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"P.\"\n    },\n    {\n      \"id\": \"880e8400-e29b-41d4-a716-446655440011\",\n      \"firstName\": \"María\",\n      \"lastName\": \"G.\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Available Slots (Public)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/p/{{slug}}/slots?serviceId={{serviceId}}&startDate=2026-01-20&endDate=2026-01-25",
+              "host": ["{{baseUrl}}"],
+              "path": ["p", "{{slug}}", "slots"],
+              "query": [
+                {
+                  "key": "serviceId",
+                  "value": "{{serviceId}}"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2026-01-20"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-25"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Slots disponibles (público)",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"slots\": {\n      \"2026-01-20\": [\n        { \"time\": \"09:00\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\"] },\n        { \"time\": \"09:30\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\", \"880e8400-e29b-41d4-a716-446655440011\"] },\n        { \"time\": \"10:00\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\"] }\n      ],\n      \"2026-01-21\": [\n        { \"time\": \"09:00\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440010\"] },\n        { \"time\": \"09:30\", \"workers\": [\"880e8400-e29b-41d4-a716-446655440011\"] }\n      ]\n    },\n    \"workers\": [\n      { \"id\": \"880e8400-e29b-41d4-a716-446655440010\", \"firstName\": \"Juan\", \"lastName\": \"P.\" },\n      { \"id\": \"880e8400-e29b-41d4-a716-446655440011\", \"firstName\": \"María\", \"lastName\": \"G.\" }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Booking (Public)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"{{serviceId}}\",\n  \"workerId\": \"{{memberId}}\",\n  \"startTime\": \"2026-01-20T10:00:00.000Z\",\n  \"customer\": {\n    \"firstName\": \"Ana\",\n    \"lastName\": \"López\",\n    \"email\": \"ana@ejemplo.com\",\n    \"phone\": \"+52 555 666 7777\"\n  },\n  \"notes\": \"Primera visita\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/p/{{slug}}/book",
+              "host": ["{{baseUrl}}"],
+              "path": ["p", "{{slug}}", "book"]
+            }
+          },
+          "response": [
+            {
+              "name": "Reserva creada",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440070\",\n    \"bookingCode\": \"GHI789\",\n    \"startTime\": \"2026-01-20T10:00:00.000Z\",\n    \"endTime\": \"2026-01-20T10:30:00.000Z\",\n    \"status\": \"pending\",\n    \"service\": {\n      \"name\": \"Corte de cabello\",\n      \"duration\": 30,\n      \"price\": 150.00\n    },\n    \"worker\": {\n      \"firstName\": \"Juan\",\n      \"lastName\": \"P.\"\n    },\n    \"organization\": {\n      \"name\": \"Mi Negocio\",\n      \"phone\": \"+52 555 111 2222\",\n      \"email\": \"contacto@minegocio.com\"\n    },\n    \"message\": \"Tu cita ha sido reservada. Recibirás un email de confirmación.\"\n  }\n}"
+            },
+            {
+              "name": "Horario no disponible",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Time slot is no longer available\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            },
+            {
+              "name": "Muy poco tiempo de anticipación",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Booking requires at least 2 hours notice\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Booking by Code",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/p/{{slug}}/bookings/{{bookingCode}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["p", "{{slug}}", "bookings", "{{bookingCode}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Reserva obtenida",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"dd0e8400-e29b-41d4-a716-446655440070\",\n    \"bookingCode\": \"GHI789\",\n    \"startTime\": \"2026-01-20T10:00:00.000Z\",\n    \"endTime\": \"2026-01-20T10:30:00.000Z\",\n    \"status\": \"pending\",\n    \"service\": {\n      \"name\": \"Corte de cabello\",\n      \"duration\": 30,\n      \"price\": 150.00\n    },\n    \"worker\": {\n      \"firstName\": \"Juan\",\n      \"lastName\": \"P.\"\n    },\n    \"organization\": {\n      \"name\": \"Mi Negocio\",\n      \"phone\": \"+52 555 111 2222\",\n      \"email\": \"contacto@minegocio.com\",\n      \"address\": \"Calle Principal #123\"\n    },\n    \"canCancel\": true\n  }\n}"
+            },
+            {
+              "name": "Reserva no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Booking not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cancel Booking by Code",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"No podré asistir\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/p/{{slug}}/bookings/{{bookingCode}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["p", "{{slug}}", "bookings", "{{bookingCode}}", "cancel"]
+            }
+          },
+          "response": [
+            {
+              "name": "Reserva cancelada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"message\": \"Booking cancelled successfully\",\n    \"bookingCode\": \"GHI789\",\n    \"status\": \"cancelled\"\n  }\n}"
+            },
+            {
+              "name": "Cancelación no permitida",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Booking cannot be cancelled less than 2 hours before the appointment\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('adminToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@agenda-saas.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "login"]
+            }
+          },
+          "response": [
+            {
+              "name": "Login exitoso",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoiYWRtMDAxIiwicm9sZSI6InN1cGVyX2FkbWluIn0.xyz\",\n    \"admin\": {\n      \"id\": \"adm001\",\n      \"email\": \"admin@agenda-saas.com\",\n      \"name\": \"Super Admin\",\n      \"role\": \"super_admin\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Credenciales inválidas",
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Invalid credentials\",\n    \"code\": \"UNAUTHORIZED\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Admin Me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "me"]
+            }
+          },
+          "response": [
+            {
+              "name": "Perfil del admin",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"adm001\",\n    \"email\": \"admin@agenda-saas.com\",\n    \"name\": \"Super Admin\",\n    \"role\": \"super_admin\",\n    \"lastLogin\": \"2026-01-19T10:00:00.000Z\",\n    \"createdAt\": \"2025-01-01T00:00:00.000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard", "stats"]
+            }
+          },
+          "response": [
+            {
+              "name": "Estadísticas del dashboard",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"totalOrganizations\": 150,\n    \"activeOrganizations\": 142,\n    \"suspendedOrganizations\": 5,\n    \"pendingOrganizations\": 3,\n    \"totalUsers\": 450,\n    \"totalAppointments\": 12500,\n    \"appointmentsToday\": 85,\n    \"appointmentsThisWeek\": 520,\n    \"appointmentsThisMonth\": 2100,\n    \"newOrganizationsThisMonth\": 12,\n    \"newUsersThisMonth\": 35,\n    \"revenue\": {\n      \"thisMonth\": 25000.00,\n      \"lastMonth\": 22000.00,\n      \"growth\": 13.6\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Organizations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/organizations?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "organizations"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Lista de organizaciones",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"organizations\": [\n      {\n        \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n        \"name\": \"Mi Negocio\",\n        \"slug\": \"mi-negocio\",\n        \"status\": \"active\",\n        \"memberCount\": 5,\n        \"appointmentCount\": 250,\n        \"owner\": {\n          \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n          \"firstName\": \"Juan\",\n          \"lastName\": \"Pérez\",\n          \"email\": \"juan@ejemplo.com\"\n        },\n        \"createdAt\": \"2025-06-01T10:00:00.000Z\"\n      },\n      {\n        \"id\": \"660e8400-e29b-41d4-a716-446655440002\",\n        \"name\": \"Salón Beauty\",\n        \"slug\": \"salon-beauty\",\n        \"status\": \"active\",\n        \"memberCount\": 3,\n        \"appointmentCount\": 180,\n        \"owner\": {\n          \"id\": \"550e8400-e29b-41d4-a716-446655440001\",\n          \"firstName\": \"María\",\n          \"lastName\": \"García\",\n          \"email\": \"maria@ejemplo.com\"\n        },\n        \"createdAt\": \"2025-07-15T10:00:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 20,\n      \"total\": 150,\n      \"totalPages\": 8\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Organization Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/organizations/{{orgId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "organizations", "{{orgId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Detalles de la organización",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n    \"name\": \"Mi Negocio\",\n    \"slug\": \"mi-negocio\",\n    \"status\": \"active\",\n    \"tagline\": \"Los mejores servicios\",\n    \"about\": \"Somos una empresa dedicada a...\",\n    \"phone\": \"+52 555 111 2222\",\n    \"email\": \"contacto@minegocio.com\",\n    \"website\": \"https://minegocio.com\",\n    \"timezone\": \"America/Mexico_City\",\n    \"currency\": \"MXN\",\n    \"bookingEnabled\": true,\n    \"memberCount\": 5,\n    \"serviceCount\": 8,\n    \"customerCount\": 120,\n    \"appointmentCount\": 250,\n    \"owner\": {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"Pérez\",\n      \"email\": \"juan@ejemplo.com\"\n    },\n    \"members\": [\n      {\n        \"id\": \"880e8400-e29b-41d4-a716-446655440010\",\n        \"userId\": \"550e8400-e29b-41d4-a716-446655440000\",\n        \"firstName\": \"Juan\",\n        \"lastName\": \"Pérez\",\n        \"role\": \"owner\"\n      }\n    ],\n    \"createdAt\": \"2025-06-01T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-15T10:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Organización no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Organization not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Organization Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"suspended\",\n  \"reason\": \"Violación de términos de uso\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/organizations/{{orgId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "organizations", "{{orgId}}", "status"]
+            }
+          },
+          "response": [
+            {
+              "name": "Estado actualizado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n    \"name\": \"Mi Negocio\",\n    \"status\": \"suspended\",\n    \"statusReason\": \"Violación de términos de uso\",\n    \"statusChangedAt\": \"2026-01-19T12:00:00.000Z\",\n    \"statusChangedBy\": \"adm001\"\n  }\n}"
+            },
+            {
+              "name": "Estado inválido",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Invalid status. Must be one of: active, suspended, pending\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Organization (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mi Negocio Actualizado\",\n  \"tagline\": \"Nuevo tagline\",\n  \"bookingEnabled\": true,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/organizations/{{orgId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "organizations", "{{orgId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Organización actualizada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"success\": true\n  }\n}"
+            },
+            {
+              "name": "Organización no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Organization not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Organization (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/organizations/{{orgId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "organizations", "{{orgId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Organización eliminada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"success\": true,\n    \"message\": \"Organization deleted successfully\"\n  }\n}"
+            },
+            {
+              "name": "Organización no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Organization not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Lista de usuarios",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"users\": [\n      {\n        \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n        \"firstName\": \"Juan\",\n        \"lastName\": \"Pérez\",\n        \"email\": \"juan@ejemplo.com\",\n        \"emailVerified\": true,\n        \"organizationCount\": 2,\n        \"createdAt\": \"2025-06-01T10:00:00.000Z\",\n        \"lastLogin\": \"2026-01-19T08:00:00.000Z\"\n      },\n      {\n        \"id\": \"550e8400-e29b-41d4-a716-446655440001\",\n        \"firstName\": \"María\",\n        \"lastName\": \"García\",\n        \"email\": \"maria@ejemplo.com\",\n        \"emailVerified\": true,\n        \"organizationCount\": 1,\n        \"createdAt\": \"2025-07-15T10:00:00.000Z\",\n        \"lastLogin\": \"2026-01-18T15:00:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 20,\n      \"total\": 450,\n      \"totalPages\": 23\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get User Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Detalles del usuario",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"firstName\": \"Juan\",\n    \"lastName\": \"Pérez\",\n    \"email\": \"juan@ejemplo.com\",\n    \"phone\": \"+52 555 123 4567\",\n    \"emailVerified\": true,\n    \"createdAt\": \"2025-06-01T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-15T10:00:00.000Z\",\n    \"lastLogin\": \"2026-01-19T08:00:00.000Z\",\n    \"organizations\": [\n      {\n        \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n        \"name\": \"Mi Negocio\",\n        \"role\": \"owner\",\n        \"status\": \"active\"\n      },\n      {\n        \"id\": \"660e8400-e29b-41d4-a716-446655440003\",\n        \"name\": \"Otro Negocio\",\n        \"role\": \"worker\",\n        \"status\": \"active\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Usuario no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"User not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update User Status (Suspend/Activate)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false,\n  \"reason\": \"Violación de términos de uso\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}", "status"]
+            }
+          },
+          "response": [
+            {
+              "name": "Usuario suspendido",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"success\": true,\n    \"message\": \"User suspended\",\n    \"isActive\": false\n  }\n}"
+            },
+            {
+              "name": "Usuario activado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"success\": true,\n    \"message\": \"User activated\",\n    \"isActive\": true\n  }\n}"
+            },
+            {
+              "name": "Usuario no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"User not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Impersonate User (Super Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}/impersonate",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{userId}}", "impersonate"]
+            }
+          },
+          "response": [
+            {
+              "name": "Token de impersonación generado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDAiLCJpbXBlcnNvbmF0ZWRCeSI6ImFkbTAwMSJ9.xyz\",\n    \"user\": {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"email\": \"juan@ejemplo.com\",\n      \"firstName\": \"Juan\",\n      \"lastName\": \"Pérez\"\n    },\n    \"expiresIn\": \"1h\",\n    \"warning\": \"This is an impersonation session. Actions will be logged.\"\n  }\n}"
+            },
+            {
+              "name": "Usuario no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"User not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Audit Log",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/audit-log?page=1&limit=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "audit-log"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "50" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Log de auditoría",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"logs\": [\n      {\n        \"id\": \"log001\",\n        \"action\": \"organization.status.update\",\n        \"adminId\": \"adm001\",\n        \"adminEmail\": \"admin@agenda-saas.com\",\n        \"targetType\": \"organization\",\n        \"targetId\": \"660e8400-e29b-41d4-a716-446655440001\",\n        \"details\": {\n          \"previousStatus\": \"active\",\n          \"newStatus\": \"suspended\",\n          \"reason\": \"Violación de términos de uso\"\n        },\n        \"ipAddress\": \"192.168.1.100\",\n        \"createdAt\": \"2026-01-19T12:00:00.000Z\"\n      },\n      {\n        \"id\": \"log002\",\n        \"action\": \"admin.login\",\n        \"adminId\": \"adm001\",\n        \"adminEmail\": \"admin@agenda-saas.com\",\n        \"targetType\": null,\n        \"targetId\": null,\n        \"details\": {},\n        \"ipAddress\": \"192.168.1.100\",\n        \"createdAt\": \"2026-01-19T10:00:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 50,\n      \"total\": 250,\n      \"totalPages\": 5\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Admins (Super Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/admins",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "admins"]
+            }
+          },
+          "response": [
+            {
+              "name": "Lista de administradores",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"adm001\",\n      \"email\": \"admin@agenda-saas.com\",\n      \"name\": \"Super Admin\",\n      \"role\": \"super_admin\",\n      \"isActive\": true,\n      \"lastLogin\": \"2026-01-19T10:00:00.000Z\",\n      \"createdAt\": \"2025-01-01T00:00:00.000Z\"\n    },\n    {\n      \"id\": \"adm002\",\n      \"email\": \"support@agenda-saas.com\",\n      \"name\": \"Support User\",\n      \"role\": \"support\",\n      \"isActive\": true,\n      \"lastLogin\": \"2026-01-18T14:00:00.000Z\",\n      \"createdAt\": \"2025-03-15T10:00:00.000Z\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Sin permisos de super admin",
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Super admin access required\",\n    \"code\": \"FORBIDDEN\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Admin (Super Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"support@agenda-saas.com\",\n  \"password\": \"support123\",\n  \"name\": \"Support User\",\n  \"role\": \"support\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/admins",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "admins"]
+            }
+          },
+          "response": [
+            {
+              "name": "Admin creado",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"adm003\",\n    \"email\": \"support@agenda-saas.com\",\n    \"name\": \"Support User\",\n    \"role\": \"support\",\n    \"isActive\": true,\n    \"createdAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Email ya registrado",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Email already registered\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Admin (Super Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Support User Updated\",\n  \"role\": \"support\",\n  \"isActive\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/admins/{{adminId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "admins", "{{adminId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Admin actualizado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"adm002\",\n    \"email\": \"support@agenda-saas.com\",\n    \"name\": \"Support User Updated\",\n    \"role\": \"support\",\n    \"isActive\": false,\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Admin no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Admin not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            },
+            {
+              "name": "No puede desactivarse a sí mismo",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Cannot deactivate your own account\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Admin (Super Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/admins/{{adminId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "admins", "{{adminId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Admin eliminado",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"success\": true,\n    \"message\": \"Admin deactivated successfully\"\n  }\n}"
+            },
+            {
+              "name": "No puede eliminarse a sí mismo",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Cannot delete your own account\",\n    \"code\": \"BAD_REQUEST\"\n  }\n}"
+            },
+            {
+              "name": "Admin no encontrado",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Admin not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Settings (Super Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings"]
+            }
+          },
+          "response": [
+            {
+              "name": "Configuraciones del sistema",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"key\": \"registration_enabled\",\n      \"value\": \"true\",\n      \"description\": \"Habilitar registro de nuevas organizaciones\",\n      \"updatedAt\": \"2026-01-15T10:00:00.000Z\",\n      \"updatedBy\": \"adm001\"\n    },\n    {\n      \"key\": \"max_organizations_per_user\",\n      \"value\": \"5\",\n      \"description\": \"Máximo de organizaciones por usuario\",\n      \"updatedAt\": \"2025-12-01T10:00:00.000Z\",\n      \"updatedBy\": \"adm001\"\n    },\n    {\n      \"key\": \"default_trial_days\",\n      \"value\": \"14\",\n      \"description\": \"Días de prueba gratuita\",\n      \"updatedAt\": \"2025-06-01T10:00:00.000Z\",\n      \"updatedBy\": \"adm001\"\n    },\n    {\n      \"key\": \"email_verification_required\",\n      \"value\": \"true\",\n      \"description\": \"Requiere verificación de email para registro\",\n      \"updatedAt\": \"2025-01-01T00:00:00.000Z\",\n      \"updatedBy\": \"adm001\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Setting (Super Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": \"true\",\n  \"description\": \"Habilitar registro de nuevas organizaciones\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings/registration_enabled",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "settings", "registration_enabled"]
+            }
+          },
+          "response": [
+            {
+              "name": "Configuración actualizada",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"key\": \"registration_enabled\",\n    \"value\": \"true\",\n    \"description\": \"Habilitar registro de nuevas organizaciones\",\n    \"updatedAt\": \"2026-01-19T12:00:00.000Z\",\n    \"updatedBy\": \"adm001\"\n  }\n}"
+            },
+            {
+              "name": "Configuración no encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": false,\n  \"error\": {\n    \"message\": \"Setting not found\",\n    \"code\": \"NOT_FOUND\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

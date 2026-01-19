@@ -76,6 +76,17 @@ export class ApiService {
     });
   }
 
+  updateOrganization(
+    orgId: string,
+    data: { name?: string; tagline?: string; bookingEnabled?: boolean; isActive?: boolean }
+  ): Observable<ApiResponse> {
+    return this.http.put<ApiResponse>(`${this.baseUrl}/organizations/${orgId}`, data);
+  }
+
+  deleteOrganization(orgId: string): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(`${this.baseUrl}/organizations/${orgId}`);
+  }
+
   // Users
   getUsers(params?: {
     page?: number;
@@ -89,6 +100,24 @@ export class ApiService {
     return this.http.get<UserDetailResponse>(`${this.baseUrl}/users/${userId}`);
   }
 
+  updateUserStatus(
+    userId: string,
+    isActive: boolean,
+    reason?: string
+  ): Observable<ApiResponse> {
+    return this.http.put<ApiResponse>(`${this.baseUrl}/users/${userId}/status`, {
+      isActive,
+      reason,
+    });
+  }
+
+  impersonateUser(userId: string): Observable<ApiResponse<{ token: string; user: { id: string; email: string; firstName: string; lastName: string } }>> {
+    return this.http.post<ApiResponse<{ token: string; user: { id: string; email: string; firstName: string; lastName: string } }>>(
+      `${this.baseUrl}/users/${userId}/impersonate`,
+      {}
+    );
+  }
+
   // Admins (super_admin only)
   getAdmins(): Observable<AdminListResponse> {
     return this.http.get<AdminListResponse>(`${this.baseUrl}/admins`);
@@ -100,9 +129,13 @@ export class ApiService {
 
   updateAdmin(
     adminId: string,
-    data: Partial<CreateAdminRequest>
+    data: Partial<CreateAdminRequest & { isActive?: boolean }>
   ): Observable<ApiResponse<{ admin: Admin }>> {
     return this.http.put<ApiResponse<{ admin: Admin }>>(`${this.baseUrl}/admins/${adminId}`, data);
+  }
+
+  deleteAdmin(adminId: string): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(`${this.baseUrl}/admins/${adminId}`);
   }
 
   // Settings (super_admin only)
