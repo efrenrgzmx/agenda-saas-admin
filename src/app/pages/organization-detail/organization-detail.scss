@@ -1,0 +1,126 @@
+.org-detail {
+  &__back {
+    margin-bottom: 1rem;
+  }
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  &__info {
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  &__slug {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-family: monospace;
+  }
+
+  &__description {
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  &__status-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  &__section {
+    margin-top: 1.5rem;
+
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__empty {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 100;
+}
+
+.modal {
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 420px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+
+    &:hover {
+      background: var(--bg-tertiary);
+    }
+  }
+
+  &__body {
+    padding: 1.25rem;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border-color);
+  }
+}
+
+@media (max-width: 768px) {
+  .org-detail {
+    &__header {
+      flex-direction: column;
+    }
+
+    &__status-section {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+}

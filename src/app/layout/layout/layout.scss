@@ -1,0 +1,234 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+
+  &__overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+  }
+
+  &.sidebar-open {
+    .layout__overlay {
+      display: block;
+    }
+
+    .sidebar {
+      transform: translateX(0);
+    }
+  }
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: transform var(--transition);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  &__logo {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+
+    &:hover {
+      background: var(--bg-tertiary);
+    }
+  }
+
+  &__nav {
+    flex: 1;
+    padding: 1rem 0.75rem;
+    overflow-y: auto;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    transition: all var(--transition);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    &.active {
+      background: var(--primary);
+      color: white;
+
+      svg {
+        stroke: white;
+      }
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 1rem 0;
+  }
+
+  &__section-title {
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  &__footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  &__user-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__user-name {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__user-role {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  &__logout {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    border-radius: var(--border-radius);
+    transition: all var(--transition);
+
+    &:hover {
+      background: var(--bg-tertiary);
+      color: var(--danger);
+    }
+  }
+}
+
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: var(--header-height);
+  padding: 0 1.5rem;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 30;
+
+  &__menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+
+    &:hover {
+      background: var(--bg-tertiary);
+    }
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+}
+
+.content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+// Mobile
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .main {
+    margin-left: 0;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+}

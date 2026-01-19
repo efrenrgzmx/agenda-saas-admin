@@ -1,0 +1,102 @@
+<div class="organizations">
+  <div class="page-header">
+    <h1>Organizaciones</h1>
+  </div>
+
+  <div class="card">
+    <div class="organizations__filters">
+      <div class="organizations__search">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar por nombre o slug..."
+          [(ngModel)]="search"
+          (keyup.enter)="onSearch()"
+        />
+        <button class="btn btn--primary" (click)="onSearch()">Buscar</button>
+      </div>
+
+      <select class="form-control organizations__status-filter" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+        <option value="">Todos los estados</option>
+        <option value="active">Activas</option>
+        <option value="suspended">Suspendidas</option>
+        <option value="banned">Baneadas</option>
+      </select>
+    </div>
+
+    @if (loading()) {
+      <div class="loading">
+        <div class="loading__spinner"></div>
+      </div>
+    } @else if (error()) {
+      <div class="empty-state">
+        <p class="empty-state__description">{{ error() }}</p>
+        <button class="btn btn--primary" (click)="loadOrganizations()">Reintentar</button>
+      </div>
+    } @else if (organizations().length === 0) {
+      <div class="empty-state">
+        <p class="empty-state__title">Sin resultados</p>
+        <p class="empty-state__description">No se encontraron organizaciones</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Slug</th>
+              <th>Estado</th>
+              <th class="hide-mobile">Miembros</th>
+              <th class="hide-mobile">Creada</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (org of organizations(); track org.id) {
+              <tr>
+                <td>
+                  <span class="organizations__name">{{ org.name }}</span>
+                </td>
+                <td>
+                  <code class="organizations__slug">{{ org.slug }}</code>
+                </td>
+                <td>
+                  <span class="badge" [class]="getStatusClass(org.status)">
+                    {{ getStatusLabel(org.status) }}
+                  </span>
+                </td>
+                <td class="hide-mobile">{{ org.members_count || 0 }}</td>
+                <td class="hide-mobile">{{ org.created_at | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <a [routerLink]="['/organizations', org.id]" class="btn btn--ghost btn--sm">Ver</a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (pagination() && pagination()!.totalPages > 1) {
+        <div class="organizations__pagination">
+          <button
+            class="btn btn--secondary btn--sm"
+            [disabled]="currentPage === 1"
+            (click)="goToPage(currentPage - 1)"
+          >
+            Anterior
+          </button>
+          <span class="organizations__page-info">
+            Pagina {{ currentPage }} de {{ pagination()!.totalPages }}
+          </span>
+          <button
+            class="btn btn--secondary btn--sm"
+            [disabled]="currentPage === pagination()!.totalPages"
+            (click)="goToPage(currentPage + 1)"
+          >
+            Siguiente
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

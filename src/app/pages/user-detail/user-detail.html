@@ -1,0 +1,76 @@
+<div class="user-detail">
+  <div class="page-header">
+    <div class="user-detail__back">
+      <a routerLink="/users" class="btn btn--ghost btn--sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Volver
+      </a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="loading__spinner"></div>
+    </div>
+  } @else if (error()) {
+    <div class="card">
+      <div class="empty-state">
+        <p class="empty-state__description">{{ error() }}</p>
+        <a routerLink="/users" class="btn btn--primary">Volver a usuarios</a>
+      </div>
+    </div>
+  } @else if (user()) {
+    <div class="user-detail__header card">
+      <div class="user-detail__info">
+        <h1>{{ user()!.name }}</h1>
+        <p class="user-detail__email">{{ user()!.email }}</p>
+        @if (user()!.phone) {
+          <p class="user-detail__phone">{{ user()!.phone }}</p>
+        }
+      </div>
+      <div class="user-detail__meta">
+        <span class="badge" [class]="user()!.email_verified ? 'badge--success' : 'badge--warning'">
+          {{ user()!.email_verified ? 'Email verificado' : 'Email no verificado' }}
+        </span>
+        <p class="user-detail__date">Registrado: {{ user()!.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+    </div>
+
+    <div class="user-detail__section card">
+      <h2>Organizaciones</h2>
+      @if (organizations().length === 0) {
+        <p class="user-detail__empty">Este usuario no pertenece a ninguna organizacion</p>
+      } @else {
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Organizacion</th>
+                <th>Rol</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of organizations(); track item.organization.id) {
+                <tr>
+                  <td>
+                    <span class="user-detail__org-name">{{ item.organization.name }}</span>
+                  </td>
+                  <td>
+                    <span class="badge badge--secondary">{{ getRoleLabel(item.role) }}</span>
+                  </td>
+                  <td>
+                    <a [routerLink]="['/organizations', item.organization.id]" class="btn btn--ghost btn--sm">Ver org</a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</div>

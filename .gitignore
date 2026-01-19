@@ -1,0 +1,40 @@
+# Angular build output
+dist/
+
+# Node modules
+node_modules/
+
+# Environment files (keep environment.ts template, ignore local configs)
+.env*
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Compiled output
+out-tsc/
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Misc
+tmp/
+temp/
+
+# Angular cache
+.angular/
+
+# SSR output
+.output/

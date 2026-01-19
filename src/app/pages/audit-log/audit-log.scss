@@ -1,0 +1,40 @@
+.audit-log {
+  &__date {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  &__entity {
+    font-size: 0.75rem;
+    background: var(--bg-tertiary);
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    color: var(--text-secondary);
+  }
+
+  &__ip {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    font-family: monospace;
+  }
+
+  &__empty {
+    color: var(--text-muted);
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  &__page-info {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+}

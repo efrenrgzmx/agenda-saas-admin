@@ -1,0 +1,82 @@
+<div class="audit-log">
+  <div class="page-header">
+    <h1>Audit Log</h1>
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <div class="loading">
+        <div class="loading__spinner"></div>
+      </div>
+    } @else if (error()) {
+      <div class="empty-state">
+        <p class="empty-state__description">{{ error() }}</p>
+        <button class="btn btn--primary" (click)="loadLogs()">Reintentar</button>
+      </div>
+    } @else if (logs().length === 0) {
+      <div class="empty-state">
+        <p class="empty-state__title">Sin registros</p>
+        <p class="empty-state__description">No hay registros en el audit log</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Admin</th>
+              <th>Accion</th>
+              <th class="hide-mobile">Entidad</th>
+              <th class="hide-mobile">IP</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (log of logs(); track log.id) {
+              <tr>
+                <td>
+                  <span class="audit-log__date">{{ log.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+                </td>
+                <td>{{ log.admin_name }}</td>
+                <td>
+                  <span class="badge badge--secondary">{{ getActionLabel(log.action) }}</span>
+                </td>
+                <td class="hide-mobile">
+                  @if (log.entity_type) {
+                    <code class="audit-log__entity">{{ log.entity_type }}{{ log.entity_id ? ':' + log.entity_id.substring(0, 8) : '' }}</code>
+                  } @else {
+                    <span class="audit-log__empty">-</span>
+                  }
+                </td>
+                <td class="hide-mobile">
+                  <span class="audit-log__ip">{{ log.ip_address || '-' }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (pagination() && pagination()!.totalPages > 1) {
+        <div class="audit-log__pagination">
+          <button
+            class="btn btn--secondary btn--sm"
+            [disabled]="currentPage === 1"
+            (click)="goToPage(currentPage - 1)"
+          >
+            Anterior
+          </button>
+          <span class="audit-log__page-info">
+            Pagina {{ currentPage }} de {{ pagination()!.totalPages }}
+          </span>
+          <button
+            class="btn btn--secondary btn--sm"
+            [disabled]="currentPage === pagination()!.totalPages"
+            (click)="goToPage(currentPage + 1)"
+          >
+            Siguiente
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

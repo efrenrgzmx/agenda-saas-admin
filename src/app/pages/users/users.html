@@ -1,0 +1,91 @@
+<div class="users">
+  <div class="page-header">
+    <h1>Usuarios</h1>
+  </div>
+
+  <div class="card">
+    <div class="users__filters">
+      <div class="users__search">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar por nombre o email..."
+          [(ngModel)]="search"
+          (keyup.enter)="onSearch()"
+        />
+        <button class="btn btn--primary" (click)="onSearch()">Buscar</button>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="loading">
+        <div class="loading__spinner"></div>
+      </div>
+    } @else if (error()) {
+      <div class="empty-state">
+        <p class="empty-state__description">{{ error() }}</p>
+        <button class="btn btn--primary" (click)="loadUsers()">Reintentar</button>
+      </div>
+    } @else if (users().length === 0) {
+      <div class="empty-state">
+        <p class="empty-state__title">Sin resultados</p>
+        <p class="empty-state__description">No se encontraron usuarios</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th class="hide-mobile">Verificado</th>
+              <th class="hide-mobile">Registrado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users(); track user.id) {
+              <tr>
+                <td>
+                  <span class="users__name">{{ user.name }}</span>
+                </td>
+                <td>{{ user.email }}</td>
+                <td class="hide-mobile">
+                  <span class="badge" [class]="user.email_verified ? 'badge--success' : 'badge--secondary'">
+                    {{ user.email_verified ? 'Si' : 'No' }}
+                  </span>
+                </td>
+                <td class="hide-mobile">{{ user.created_at | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <a [routerLink]="['/users', user.id]" class="btn btn--ghost btn--sm">Ver</a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (pagination() && pagination()!.totalPages > 1) {
+        <div class="users__pagination">
+          <button
+            class="btn btn--secondary btn--sm"
+            [disabled]="currentPage === 1"
+            (click)="goToPage(currentPage - 1)"
+          >
+            Anterior
+          </button>
+          <span class="users__page-info">
+            Pagina {{ currentPage }} de {{ pagination()!.totalPages }}
+          </span>
+          <button
+            class="btn btn--secondary btn--sm"
+            [disabled]="currentPage === pagination()!.totalPages"
+            (click)="goToPage(currentPage + 1)"
+          >
+            Siguiente
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>

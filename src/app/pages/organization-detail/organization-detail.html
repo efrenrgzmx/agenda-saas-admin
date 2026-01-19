@@ -1,0 +1,139 @@
+<div class="org-detail">
+  <div class="page-header">
+    <div class="org-detail__back">
+      <a routerLink="/organizations" class="btn btn--ghost btn--sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Volver
+      </a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="loading__spinner"></div>
+    </div>
+  } @else if (error()) {
+    <div class="card">
+      <div class="empty-state">
+        <p class="empty-state__description">{{ error() }}</p>
+        <a routerLink="/organizations" class="btn btn--primary">Volver a organizaciones</a>
+      </div>
+    </div>
+  } @else if (organization()) {
+    <div class="org-detail__header card">
+      <div class="org-detail__info">
+        <h1>{{ organization()!.name }}</h1>
+        <p class="org-detail__slug">{{ organization()!.slug }}</p>
+        @if (organization()!.description) {
+          <p class="org-detail__description">{{ organization()!.description }}</p>
+        }
+      </div>
+      <div class="org-detail__status-section">
+        <span class="badge" [class]="getStatusClass(organization()!.status)">
+          {{ getStatusLabel(organization()!.status) }}
+        </span>
+        <button class="btn btn--secondary btn--sm" (click)="openStatusModal()">Cambiar estado</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <p class="stat-card__label">Miembros</p>
+        <p class="stat-card__value">{{ organization()!.stats?.memberCount || 0 }}</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Servicios</p>
+        <p class="stat-card__value">{{ organization()!.stats?.serviceCount || 0 }}</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Clientes</p>
+        <p class="stat-card__value">{{ organization()!.stats?.customerCount || 0 }}</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Citas totales</p>
+        <p class="stat-card__value">{{ organization()!.stats?.totalAppointments || 0 }}</p>
+      </div>
+    </div>
+
+    <div class="org-detail__section card">
+      <h2>Miembros</h2>
+      @if (members().length === 0) {
+        <p class="org-detail__empty">Sin miembros</p>
+      } @else {
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th class="hide-mobile">Desde</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (member of members(); track member.id) {
+                <tr>
+                  <td>{{ member.name }}</td>
+                  <td>{{ member.email }}</td>
+                  <td>
+                    <span class="badge badge--secondary">{{ getRoleLabel(member.role) }}</span>
+                  </td>
+                  <td class="hide-mobile">{{ member.createdAt | date:'dd/MM/yyyy' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@if (showStatusModal()) {
+  <div class="modal-overlay" (click)="closeStatusModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3>Cambiar estado</h3>
+        <button class="modal__close" (click)="closeStatusModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="form-group">
+          <label for="status">Nuevo estado</label>
+          <select id="status" class="form-control" [(ngModel)]="newStatus">
+            <option value="active">Activa</option>
+            <option value="suspended">Suspendida</option>
+            <option value="banned">Baneada</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="reason">Razon (opcional)</label>
+          <textarea
+            id="reason"
+            class="form-control"
+            rows="3"
+            [(ngModel)]="statusReason"
+            placeholder="Motivo del cambio..."
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--secondary" (click)="closeStatusModal()">Cancelar</button>
+        <button class="btn btn--primary" [disabled]="updating()" (click)="updateStatus()">
+          @if (updating()) {
+            Guardando...
+          } @else {
+            Guardar
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

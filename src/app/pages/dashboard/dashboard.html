@@ -1,0 +1,64 @@
+<div class="dashboard">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+  </div>
+
+  @if (loading()) {
+    <div class="loading">
+      <div class="loading__spinner"></div>
+    </div>
+  } @else if (error()) {
+    <div class="card">
+      <div class="empty-state">
+        <p class="empty-state__description">{{ error() }}</p>
+        <button class="btn btn--primary" (click)="loadStats()">Reintentar</button>
+      </div>
+    </div>
+  } @else if (stats()) {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <p class="stat-card__label">Total Organizaciones</p>
+        <p class="stat-card__value">{{ stats()!.organizations.total }}</p>
+        <p class="stat-card__change stat-card__change--positive">
+          +{{ stats()!.organizations.new_this_month }} este mes
+        </p>
+      </div>
+
+      <div class="stat-card">
+        <p class="stat-card__label">Activas</p>
+        <p class="stat-card__value">{{ stats()!.organizations.active }}</p>
+      </div>
+
+      <div class="stat-card">
+        <p class="stat-card__label">Suspendidas</p>
+        <p class="stat-card__value">{{ stats()!.organizations.suspended }}</p>
+      </div>
+
+      <div class="stat-card">
+        <p class="stat-card__label">Baneadas</p>
+        <p class="stat-card__value">{{ stats()!.organizations.banned }}</p>
+      </div>
+    </div>
+
+    <h2 class="dashboard__section-title">Usuarios</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <p class="stat-card__label">Total Usuarios</p>
+        <p class="stat-card__value">{{ stats()!.users.total }}</p>
+        <p class="stat-card__change stat-card__change--positive">
+          +{{ stats()!.users.new_this_month }} este mes
+        </p>
+      </div>
+
+      <div class="stat-card">
+        <p class="stat-card__label">Total Citas</p>
+        <p class="stat-card__value">{{ stats()!.appointments.total }}</p>
+      </div>
+
+      <div class="stat-card">
+        <p class="stat-card__label">Citas este mes</p>
+        <p class="stat-card__value">{{ stats()!.appointments.this_month }}</p>
+      </div>
+    </div>
+  }
+</div>

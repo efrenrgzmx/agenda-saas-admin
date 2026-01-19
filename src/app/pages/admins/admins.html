@@ -1,0 +1,104 @@
+<div class="admins">
+  <div class="page-header">
+    <h1>Administradores</h1>
+    <button class="btn btn--primary" (click)="openCreateModal()">Nuevo administrador</button>
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <div class="loading">
+        <div class="loading__spinner"></div>
+      </div>
+    } @else if (error()) {
+      <div class="empty-state">
+        <p class="empty-state__description">{{ error() }}</p>
+        <button class="btn btn--primary" (click)="loadAdmins()">Reintentar</button>
+      </div>
+    } @else if (admins().length === 0) {
+      <div class="empty-state">
+        <p class="empty-state__title">Sin administradores</p>
+        <p class="empty-state__description">Crea el primer administrador</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th class="hide-mobile">Creado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (admin of admins(); track admin.id) {
+              <tr>
+                <td>
+                  <span class="admins__name">{{ admin.name }}</span>
+                </td>
+                <td>{{ admin.email }}</td>
+                <td>
+                  <span class="badge" [class]="admin.role === 'super_admin' ? 'badge--info' : 'badge--secondary'">
+                    {{ getRoleLabel(admin.role) }}
+                  </span>
+                </td>
+                <td class="hide-mobile">{{ admin.created_at | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  <button class="btn btn--ghost btn--sm" (click)="openEditModal(admin)">Editar</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3>{{ modalMode() === 'create' ? 'Nuevo administrador' : 'Editar administrador' }}</h3>
+        <button class="modal__close" (click)="closeModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="form-group">
+          <label for="name">Nombre</label>
+          <input type="text" id="name" class="form-control" [(ngModel)]="formName" placeholder="Nombre completo" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" class="form-control" [(ngModel)]="formEmail" placeholder="admin@ejemplo.com" />
+        </div>
+        <div class="form-group">
+          <label for="password">{{ modalMode() === 'create' ? 'Contraseña' : 'Nueva contraseña (opcional)' }}</label>
+          <input type="password" id="password" class="form-control" [(ngModel)]="formPassword" placeholder="********" />
+        </div>
+        <div class="form-group">
+          <label for="role">Rol</label>
+          <select id="role" class="form-control" [(ngModel)]="formRole">
+            <option value="support">Soporte</option>
+            <option value="super_admin">Super Admin</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--secondary" (click)="closeModal()">Cancelar</button>
+        <button class="btn btn--primary" [disabled]="saving()" (click)="saveAdmin()">
+          @if (saving()) {
+            Guardando...
+          } @else {
+            Guardar
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

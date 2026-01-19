@@ -1,0 +1,79 @@
+<div class="settings">
+  <div class="page-header">
+    <h1>Configuracion</h1>
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <div class="loading">
+        <div class="loading__spinner"></div>
+      </div>
+    } @else if (error()) {
+      <div class="empty-state">
+        <p class="empty-state__description">{{ error() }}</p>
+        <button class="btn btn--primary" (click)="loadSettings()">Reintentar</button>
+      </div>
+    } @else if (settings().length === 0) {
+      <div class="empty-state">
+        <p class="empty-state__title">Sin configuraciones</p>
+        <p class="empty-state__description">No hay configuraciones del sistema</p>
+      </div>
+    } @else {
+      <div class="settings__list">
+        @for (setting of settings(); track setting.key) {
+          <div class="settings__item">
+            <div class="settings__item-info">
+              <span class="settings__key">{{ setting.key }}</span>
+              @if (setting.description) {
+                <span class="settings__description">{{ setting.description }}</span>
+              }
+            </div>
+            <div class="settings__item-value">
+              <code>{{ setting.value }}</code>
+              <button class="btn btn--ghost btn--sm" (click)="openEditModal(setting)">Editar</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+@if (showModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3>Editar configuracion</h3>
+        <button class="modal__close" (click)="closeModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="form-group">
+          <label>Clave</label>
+          <input type="text" class="form-control" [value]="editingSetting()?.key" disabled />
+        </div>
+        @if (editingSetting()?.description) {
+          <p class="settings__modal-description">{{ editingSetting()?.description }}</p>
+        }
+        <div class="form-group">
+          <label for="value">Valor</label>
+          <textarea id="value" class="form-control" rows="3" [(ngModel)]="formValue"></textarea>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--secondary" (click)="closeModal()">Cancelar</button>
+        <button class="btn btn--primary" [disabled]="saving()" (click)="saveSetting()">
+          @if (saving()) {
+            Guardando...
+          } @else {
+            Guardar
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

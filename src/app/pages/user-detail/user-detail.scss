@@ -1,0 +1,71 @@
+.user-detail {
+  &__back {
+    margin-bottom: 1rem;
+  }
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  &__info {
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  &__email {
+    color: var(--text-secondary);
+  }
+
+  &__phone {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    margin-top: 0.25rem;
+  }
+
+  &__meta {
+    text-align: right;
+  }
+
+  &__date {
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    margin-top: 0.5rem;
+  }
+
+  &__section {
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__empty {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+  }
+
+  &__org-name {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+}
+
+@media (max-width: 768px) {
+  .user-detail {
+    &__header {
+      flex-direction: column;
+    }
+
+    &__meta {
+      text-align: left;
+    }
+  }
+}
