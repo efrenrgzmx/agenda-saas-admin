@@ -34,21 +34,21 @@
             @for (log of logs(); track log.id) {
               <tr>
                 <td>
-                  <span class="audit-log__date">{{ log.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+                  <span class="audit-log__date">{{ log.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
                 </td>
-                <td>{{ log.admin_name }}</td>
+                <td>{{ log.adminName }}</td>
                 <td>
                   <span class="badge badge--secondary">{{ getActionLabel(log.action) }}</span>
                 </td>
                 <td class="hide-mobile">
-                  @if (log.entity_type) {
-                    <code class="audit-log__entity">{{ log.entity_type }}{{ log.entity_id ? ':' + log.entity_id.substring(0, 8) : '' }}</code>
+                  @if (log.entityType) {
+                    <code class="audit-log__entity">{{ log.entityType }}{{ log.entityId ? ':' + log.entityId.substring(0, 8) : '' }}</code>
                   } @else {
                     <span class="audit-log__empty">-</span>
                   }
                 </td>
                 <td class="hide-mobile">
-                  <span class="audit-log__ip">{{ log.ip_address || '-' }}</span>
+                  <span class="audit-log__ip">{{ log.ipAddress || '-' }}</span>
                 </td>
               </tr>
             }

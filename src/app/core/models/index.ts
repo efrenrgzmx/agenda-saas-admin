@@ -105,25 +105,32 @@ export interface OrganizationMember {
 export interface User {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone?: string;
-  avatar_url?: string;
-  email_verified: boolean;
-  created_at: string;
-  updated_at: string;
+  isVerified: number;
+  createdAt: string;
+}
+
+export interface UserMembership {
+  id: string;
+  organizationId: string;
+  organizationName: string;
+  organizationSlug: string;
+  role: 'owner' | 'admin' | 'worker';
+  isActive: number;
+  createdAt: string;
+}
+
+export interface UserDetailData extends User {
+  memberships: UserMembership[];
 }
 
 export type UserListResponse = PaginatedResponse<User>;
 
 export interface UserDetailResponse {
   success: boolean;
-  data: {
-    user: User;
-    organizations: {
-      organization: Organization;
-      role: string;
-    }[];
-  };
+  data: UserDetailData;
 }
 
 // Service
@@ -156,25 +163,24 @@ export interface SystemSetting {
   key: string;
   value: string;
   description?: string;
-  updated_at: string;
 }
 
 export interface SettingsResponse {
   success: boolean;
-  data: SystemSetting[];
+  data: Record<string, { value: string; description?: string }>;
 }
 
 // Audit Log
 export interface AuditLogEntry {
   id: string;
-  admin_id: string;
-  admin_name: string;
   action: string;
-  entity_type: string;
-  entity_id?: string;
+  entityType: string;
+  entityId?: string;
   details?: Record<string, unknown>;
-  ip_address?: string;
-  created_at: string;
+  ipAddress?: string;
+  adminName: string;
+  adminEmail: string;
+  createdAt: string;
 }
 
 export type AuditLogResponse = PaginatedResponse<AuditLogEntry>;

@@ -33,7 +33,13 @@ export class SettingsComponent implements OnInit {
     this.apiService.getSettings().subscribe({
       next: (response) => {
         if (response.success) {
-          this.settings.set(response.data);
+          // Transformar objeto a array
+          const settingsArray = Object.entries(response.data).map(([key, val]) => ({
+            key,
+            value: val.value,
+            description: val.description,
+          }));
+          this.settings.set(settingsArray);
         }
         this.loading.set(false);
       },

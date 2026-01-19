@@ -25,23 +25,23 @@
   } @else if (user()) {
     <div class="user-detail__header card">
       <div class="user-detail__info">
-        <h1>{{ user()!.name }}</h1>
+        <h1>{{ getFullName() }}</h1>
         <p class="user-detail__email">{{ user()!.email }}</p>
         @if (user()!.phone) {
           <p class="user-detail__phone">{{ user()!.phone }}</p>
         }
       </div>
       <div class="user-detail__meta">
-        <span class="badge" [class]="user()!.email_verified ? 'badge--success' : 'badge--warning'">
-          {{ user()!.email_verified ? 'Email verificado' : 'Email no verificado' }}
+        <span class="badge" [class]="user()!.isVerified ? 'badge--success' : 'badge--warning'">
+          {{ user()!.isVerified ? 'Email verificado' : 'Email no verificado' }}
         </span>
-        <p class="user-detail__date">Registrado: {{ user()!.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p class="user-detail__date">Registrado: {{ user()!.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
       </div>
     </div>
 
     <div class="user-detail__section card">
       <h2>Organizaciones</h2>
-      @if (organizations().length === 0) {
+      @if (memberships().length === 0) {
         <p class="user-detail__empty">Este usuario no pertenece a ninguna organizacion</p>
       } @else {
         <div class="table-container">
@@ -54,16 +54,16 @@
               </tr>
             </thead>
             <tbody>
-              @for (item of organizations(); track item.organization.id) {
+              @for (item of memberships(); track item.id) {
                 <tr>
                   <td>
-                    <span class="user-detail__org-name">{{ item.organization.name }}</span>
+                    <span class="user-detail__org-name">{{ item.organizationName }}</span>
                   </td>
                   <td>
                     <span class="badge badge--secondary">{{ getRoleLabel(item.role) }}</span>
                   </td>
                   <td>
-                    <a [routerLink]="['/organizations', item.organization.id]" class="btn btn--ghost btn--sm">Ver org</a>
+                    <a [routerLink]="['/organizations', item.organizationId]" class="btn btn--ghost btn--sm">Ver org</a>
                   </td>
                 </tr>
               }

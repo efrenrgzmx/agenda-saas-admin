@@ -47,15 +47,15 @@
             @for (user of users(); track user.id) {
               <tr>
                 <td>
-                  <span class="users__name">{{ user.name }}</span>
+                  <span class="users__name">{{ user.firstName }} {{ user.lastName }}</span>
                 </td>
                 <td>{{ user.email }}</td>
                 <td class="hide-mobile">
-                  <span class="badge" [class]="user.email_verified ? 'badge--success' : 'badge--secondary'">
-                    {{ user.email_verified ? 'Si' : 'No' }}
+                  <span class="badge" [class]="user.isVerified ? 'badge--success' : 'badge--secondary'">
+                    {{ user.isVerified ? 'Si' : 'No' }}
                   </span>
                 </td>
-                <td class="hide-mobile">{{ user.created_at | date:'dd/MM/yyyy' }}</td>
+                <td class="hide-mobile">{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
                 <td>
                   <a [routerLink]="['/users', user.id]" class="btn btn--ghost btn--sm">Ver</a>
                 </td>

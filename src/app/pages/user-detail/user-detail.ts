@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
-import { User, Organization } from '../../core/models';
+import { UserDetailData, UserMembership } from '../../core/models';
 
 @Component({
   selector: 'app-user-detail',
@@ -15,8 +15,8 @@ export class UserDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
 
-  user = signal<User | null>(null);
-  organizations = signal<{ organization: Organization; role: string }[]>([]);
+  user = signal<UserDetailData | null>(null);
+  memberships = signal<UserMembership[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
 
@@ -34,8 +34,8 @@ export class UserDetailComponent implements OnInit {
     this.apiService.getUser(userId).subscribe({
       next: (response) => {
         if (response.success) {
-          this.user.set(response.data.user);
-          this.organizations.set(response.data.organizations);
+          this.user.set(response.data);
+          this.memberships.set(response.data.memberships || []);
         }
         this.loading.set(false);
       },
@@ -44,6 +44,11 @@ export class UserDetailComponent implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  getFullName(): string {
+    const u = this.user();
+    return u ? `${u.firstName} ${u.lastName}` : '';
   }
 
   getRoleLabel(role: string): string {
